@@ -1,0 +1,4 @@
+http://wikipedia.com
+/wiki/Special:Search?search=
++
+(\w+<div id="siteSub">From Wikipedia, the free encyclopedia</div>\w+)
