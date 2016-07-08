@@ -9,7 +9,7 @@ def parseInfoFile(infoFilename):
 	with open(infoFilename, 'r') as openedInfoFile:
 		lines = list(openedInfoFile)
 		#returns baseUrl,  searchUrl, whitespace-seperator, finalRegex, rest of the nested regexes
-		return   lines[0], lines[1],  lines[2],             lines[3],   lines[3:]
+		return   lines[0], lines[1],  lines[2],             lines[3],   lines[4:]
 
 
 def searchSite(baseUrl, searchUrl, whiteSpaceSeperator, finalRegex, regexs, searchTerm):
