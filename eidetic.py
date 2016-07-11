@@ -3,6 +3,8 @@
 
 import sys
 import re
+import socket
+from urllib.parse import urlparse 
 from requests import get
 
 def parseInfoFile(infoFilename):
@@ -18,10 +20,25 @@ def searchSite(baseUrl, searchUrl, whiteSpaceSeperator, finalRegex, regexs, sear
 	#This should return a located page url but currently returns the search url
 	return concatURL
 
-def getMediaFromPage(pageUrl, saveName):
-	# This function figures out media url then calls wget
-	# wget mediaUrl -O filename
-	pass
+def getUrlData(url, filename, bufferSize = 4096):
+	"""
+	filename needs to include the extension of the streamed file
+	"""
+	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+	parsedUrl = urlparse(url)
+	sock.connect(parsedUrl.netloc, 80)
+
+	request = 'GET %s HTTP/1.0\n\n' % parsedUrl.path
+	sock.sendall(bytes(request, 'ascii'))
+
+	dataFile = open(filename, 'wb')
+	data = sock.recv(bufferSize)
+	while data:
+		dataFile.write(data)
+	dataFile.close()
+	sock.close()
+
+	return dataFile
 
 def getHTMLFromURL(url):
 	return get(url)
