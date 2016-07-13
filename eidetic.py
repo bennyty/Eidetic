@@ -17,28 +17,8 @@ def parseInfoFile(infoFilename):
 def searchSite(baseUrl, searchUrl, whiteSpaceSeperator, finalRegex, regexs, searchTerm):
 	concatURL = (baseUrl + searchUrl + (''.join(str(n) for n in searchTerm)).replace(" ", whiteSpaceSeperator)).replace("\r", "").replace("\n", "")
 	html = getHTMLFromURL(concatURL).text
-	#This should return a located page url but currently returns the search url
+	
 	return concatURL
-
-def getUrlData(url, filename, bufferSize = 4096):
-	"""
-	filename needs to include the extension of the streamed file
-	"""
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	parsedUrl = urlparse(url)
-	sock.connect(parsedUrl.netloc, 80)
-
-	request = 'GET %s HTTP/1.0\n\n' % parsedUrl.path
-	sock.sendall(bytes(request, 'ascii'))
-
-	dataFile = open(filename, 'wb')
-	data = sock.recv(bufferSize)
-	while data:
-		dataFile.write(data)
-	dataFile.close()
-	sock.close()
-
-	return dataFile
 
 def getHTMLFromURL(url):
 	return get(url)
@@ -57,6 +37,27 @@ def printUsageInstructions():
 Usage:
 	eidetic vid/wiki saveFilename searchName
 """)
+
+class downloadThread(threading.Thread):
+ 	def __init__(url, filename, bufferSize = 4096):
+ 		self.url = url
+ 		self.filename = filename
+ 		self.bufferSize = bufferSize
+
+ 	def run():
+		sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		parsedUrl = urlparse(self.url)
+		sock.connect(parsedUrl.netloc, 80)
+
+		request = 'GET %s HTTP/1.0\n\n' % parsedUrl.path
+		sock.sendall(bytes(request, 'ascii'))
+
+		dataFile = open(self.filename, 'wb')
+		data = sock.recv(self.bufferSize)
+		while data:
+			dataFile.write(data)
+		dataFile.close()
+		sock.close()
 
 def main(args):
 	if len(args) != 3:
