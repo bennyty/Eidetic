@@ -30,27 +30,7 @@ def searchSite(baseUrl, searchUrl, whiteSpaceSeperator, finalRegex, regexes, sea
 	
 
 	#This returns a located page url
-	return searchStringForRegex(html, finalRegex)
-
-def getUrlData(url, filename, bufferSize = 4096):
-	"""
-	filename needs to include the extension of the streamed file
-	"""
-	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-	parsedUrl = urlparse(url)
-	sock.connect(parsedUrl.netloc, 80)
-
-	request = 'GET %s HTTP/1.0\n\n' % parsedUrl.path
-	sock.sendall(bytes(request, 'ascii'))
-
-	dataFile = open(filename, 'wb')
-	data = sock.recv(bufferSize)
-	while data:
-		dataFile.write(data)
-	dataFile.close()
-	sock.close()
-
-	return dataFile
+	return searchStringForRegex(html, finalRegex, False)
 
 def userInteractionLayer(data):
 	print("We found these results:")
